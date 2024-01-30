@@ -18,9 +18,9 @@ const server = new ws.WebSocketServer({ port: PORT }, () => {
   console.log(`Server started on port ${PORT}`);
 });
 
-server.on("connection", (socket) => {
+server.on("connection", socket => {
   console.log('Connected!!!');
   socket.on('message', message => {
-    console.log(`Received message: ${message}`);
+    socket.send(fizzBuzz(parseInt(message)));
   });
 });
