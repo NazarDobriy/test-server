@@ -1,4 +1,5 @@
 import * as ws from "ws";
+import express from "express";
 
 function fizzBuzz(n: number): string {
   if (n % 15 === 0) {
@@ -14,15 +15,24 @@ function fizzBuzz(n: number): string {
 
 const PORT = process.env.PORT || 8080;
 
-const server = new ws.WebSocketServer({ port: PORT }, () => {
-  console.log(`Server started on port ${PORT}`);
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World');
 });
 
-server.on("connection", socket => {
+const httpServer = app.listen(PORT, () => {
+  console.log(`HTTP server started on port ${PORT}`);
+});
+
+const wsServer = new ws.Server({ server: httpServer });
+
+wsServer.on("connection", socket => {
+  console.log("WebSocket client connected");
   socket.on('message', message => {
-    socket.send(fizzBuzz(parseInt(message)));
+    socket.send(fizzBuzz(parseInt(message.toString())));
   });
   socket.on('close', () => {
-    console.log("Client disconnected");
+    console.log("WebSocket client disconnected");
   });
 });
