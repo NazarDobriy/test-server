@@ -19,6 +19,7 @@ const server = new ws.WebSocketServer({ port: PORT }, () => {
 });
 
 server.on("connection", () => {
+  console.log('Connected!!!');
   server.on('message', message => {
     console.log('received: %s', message);
   });
