@@ -18,6 +18,8 @@ const server = new ws.WebSocketServer({ port: PORT }, () => {
   console.log(`Server started on port ${PORT}`);
 });
 
-server.on("connection", (message: string) => {
-  console.log(message);
+server.on("connection", () => {
+  ws.on('message', message => {
+    console.log('received: %s', message);
+  });
 });
