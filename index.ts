@@ -19,7 +19,6 @@ const server = new ws.WebSocketServer({ port: PORT }, () => {
 });
 
 server.on("connection", socket => {
-  console.log('Connected!!!');
   socket.on('message', message => {
     socket.send(fizzBuzz(parseInt(message)));
   });
