@@ -22,4 +22,7 @@ server.on("connection", socket => {
   socket.on('message', message => {
     socket.send(fizzBuzz(parseInt(message)));
   });
+  socket.on('close', () => {
+    console.log("Client disconnected");
+  });
 });
