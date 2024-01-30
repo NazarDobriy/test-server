@@ -1,7 +1,31 @@
+const express = require('express');
 const http = require('http');
 const ws = require('ws');
 
-function fizzBuzz(n: number): string {
+const app = express();
+const server = http.createServer(app);
+
+const PORT = process.env.PORT || 8080;
+
+const webSocketServer = new ws.WebSocketServer({ port: PORT }, () => { 
+  console.log(`Server started on port ${PORT}`); 
+}); 
+
+app.get('/', (req, res) => {
+  res.send('Hello, world!\n');
+});
+
+webSocketServer.on('connection', socket => {
+  socket.on('message', message => {
+    socket.send(fizzBuzz(parseInt(message)));
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});
+
+function fizzBuzz(n) {
   if (n % 15 === 0) {
     return 'FizzBuzz';
   } else if (n % 3 === 0) {
@@ -12,22 +36,3 @@ function fizzBuzz(n: number): string {
     return `${n}`;
   }
 }
-
-const PORT = process.env.PORT || 8080;
-
-const httpServer = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello, world!\n');
-});
-
-const webSocketServer = new ws.Server({ server: httpServer });
-
-webSocketServer.on('connection', socket => {
-  socket.on('message', message => {
-    socket.send(fizzBuzz(parseInt(message)));
-  });
-});
-
-httpServer.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
