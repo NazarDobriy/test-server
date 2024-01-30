@@ -1,4 +1,4 @@
-const express = require('express');
+const http = require('http');
 const ws = require('ws');
 
 function fizzBuzz(n: number): string {
@@ -15,12 +15,19 @@ function fizzBuzz(n: number): string {
 
 const PORT = process.env.PORT || 8080;
 
-const server = new ws.WebSocketServer({ port: PORT }, () => {
-  console.log(`Server started on port ${PORT}`);
+const httpServer = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello, world!\n');
 });
 
-server.on("connection", socket => {
+const webSocketServer = new ws.Server({ server: httpServer });
+
+webSocketServer.on('connection', socket => {
   socket.on('message', message => {
     socket.send(fizzBuzz(parseInt(message)));
   });
+});
+
+httpServer.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
