@@ -4,7 +4,6 @@ const ws = require('ws');
 const fs = require('fs');
 
 const app = express();
-const server = http.createServer(app);
 
 const PORT = process.env.PORT || 8080;
 
@@ -52,7 +51,7 @@ webSocketServer.on('connection', socket => {
   });
 });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
 
